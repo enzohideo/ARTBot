@@ -12,20 +12,30 @@ const chat = new Chat({
   }),
 });
 
-const server = new Server()
+const server = new Server();
+
+server
+  .get("/", (_, response) => {
+    response.writeHead(200, {
+      "Content-Type": "text/html",
+    });
+    response.end(`<html><body>Hello World</body></html>`);
+  })
   .post("/api", (_, response, data) =>
     chat
       .send({
         role: "user",
         ...JSON.parse(data.toString("utf-8")),
       })
-      .then((message) => ({
-        response,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        message: JSON.stringify(message),
-      })),
+      .then((message) =>
+        server.send({
+          response,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          message: JSON.stringify(message),
+        }),
+      ),
   )
   .listen(PORT, HOST, () => {
     console.log(`Server running at http://${HOST}:${PORT}/`);

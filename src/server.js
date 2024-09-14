@@ -13,12 +13,10 @@ export default class Server {
 
       const action = this.router[req.url][req.method];
 
-      action(req, res)
-        .then((data) => this.send(data))
-        .catch((e) => {
-          console.log(e);
-          this.send({ response: res, statusCode: 400 });
-        });
+      action(req, res).catch((e) => {
+        console.log(e);
+        this.send({ response: res, statusCode: 400 });
+      });
     });
   }
 
@@ -49,7 +47,7 @@ export default class Server {
   }
 
   get(path, action) {
-    return this.route(path, "GET", action);
+    return this.route(path, "GET", async (...args) => action(...args));
   }
 
   send({ response, statusCode = 200, headers = {}, message = "" }) {
