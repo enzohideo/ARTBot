@@ -1,0 +1,52 @@
+import http from "node:http";
+
+export default class Server {
+  router = {};
+
+  constructor() {
+    this.server = http.createServer((req, res) => {
+      if (!(req.url in this.router) || !(req.method in this.router[req.url])) {
+        console.log(req.url, req.method);
+        this.send({ response: res, statusCode: 400 });
+        return;
+      }
+
+      const action = this.router[req.url][req.method];
+
+      action(req, res)
+        .then((data) => this.send(data))
+        .catch((e) => {
+          console.log(e);
+          this.send({ response: res, statusCode: 400 });
+        });
+    });
+  }
+
+  route(path, method, action) {
+    if (!(path in this.router)) this.router[path] = {};
+    this.router[path][method.toUpperCase()] = action;
+    return this;
+  }
+
+  post(path, action) {
+    return this.route(path, "POST", action);
+  }
+
+  get(path, action) {
+    return this.route(path, "GET", action);
+  }
+
+  send({ response, statusCode = 200, headers = {}, message = "" }) {
+    response.statusCode = 200;
+    for (const header of Object.entries(headers)) {
+      response.setHeader(...header);
+    }
+    response.end(message);
+    return this;
+  }
+
+  listen(...args) {
+    this.server.listen(...args);
+    return this;
+  }
+}
