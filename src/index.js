@@ -10,23 +10,22 @@ const chat = new Chat({
     apiKey: process.env["API_KEY"],
     baseURL: process.env["API_URL"],
   }),
-  model: process.env["MODEL"],
 });
 
 const server = new Server()
   .post("/api", (req, res, data) => {
     const request = JSON.parse(data.toString("utf-8"));
 
-    if (!request || !request.prompt) {
+    if (!request || !request.content) {
       throw new Error(
-        `Request has no prompt.\n${JSON.stringify(request, null, 2)}`,
+        `Request has no content.\n${JSON.stringify(request, null, 2)}`,
       );
     }
 
     return chat
       .send({
         role: "user",
-        content: request.prompt,
+        ...request,
       })
       .then((message) => ({
         response: res,

@@ -3,15 +3,16 @@ export default class Chat {
 
   constructor({ client, model }) {
     this.client = client;
-    this.model = model;
   }
 
-  send(message) {
-    this.messages.push(message);
+  send({ role, content, model, ...rest }) {
+    this.messages.push({ role, content });
+    if (!model) throw new Error("You must provide a model");
     return this.client.chat.completions
       .create({
         messages: this.messages,
-        model: this.model,
+        model: model,
+        ...rest,
       })
       .then((response) => {
         if (
@@ -20,7 +21,7 @@ export default class Chat {
           !response.choices[0].message
         )
           throw new Error(
-            `[Chat]: Invalid response \n${JSON.stringify(response, null, 2)}`,
+            `Invalid response \n${JSON.stringify(response, null, 2)}`,
           );
         return response.choices[0].message;
       })
