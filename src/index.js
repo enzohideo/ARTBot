@@ -1,4 +1,3 @@
-import OpenAI from "openai";
 import Server from "./server.js";
 import Chat from "./chat.js";
 
@@ -6,10 +5,8 @@ const HOST = process.env["HOST"];
 const PORT = process.env["PORT"];
 
 const chat = new Chat({
-  client: new OpenAI({
-    apiKey: process.env["API_KEY"],
-    baseURL: process.env["API_URL"],
-  }),
+  apiKey: process.env["API_KEY"],
+  baseURL: process.env["API_URL"],
 });
 
 const server = new Server();
