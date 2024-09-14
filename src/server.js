@@ -53,10 +53,7 @@ export default class Server {
   }
 
   send({ response, statusCode = 200, headers = {}, message = "" }) {
-    response.statusCode = 200;
-    for (const header of Object.entries(headers)) {
-      response.setHeader(...header);
-    }
+    response.writeHead(statusCode, headers);
     response.end(message);
     return this;
   }
