@@ -22,3 +22,11 @@ Test inner API
 ```sh
 curl -X "POST" -d '{"content": "Hello! Tell me a joke", "model": "sabia-3"}' localhost:8080/api
 ```
+
+## Nix/NixOS
+
+### Development shell
+
+```sh
+nix develop
+```
