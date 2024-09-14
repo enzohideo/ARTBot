@@ -5,9 +5,12 @@ export default class Chat {
     this.client = client;
   }
 
-  send({ role, content, model, ...rest }) {
-    this.messages.push({ role, content });
-    if (!model) throw new Error("You must provide a model");
+  send({ role = "user", content, prompt, model, ...rest }) {
+    if (!model || (!content && !prompt))
+      throw new Error("Missing prompt or model");
+
+    this.messages.push({ role, content: content || prompt });
+
     return this.client.chat.completions
       .create({
         messages: this.messages,

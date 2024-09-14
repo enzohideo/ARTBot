@@ -13,19 +13,11 @@ const chat = new Chat({
 });
 
 const server = new Server()
-  .post("/api", (req, res, data) => {
-    const request = JSON.parse(data.toString("utf-8"));
-
-    if (!request || !request.content) {
-      throw new Error(
-        `Request has no content.\n${JSON.stringify(request, null, 2)}`,
-      );
-    }
-
-    return chat
+  .post("/api", (req, res, data) =>
+    chat
       .send({
         role: "user",
-        ...request,
+        ...JSON.parse(data.toString("utf-8")),
       })
       .then((message) => ({
         response: res,
@@ -33,8 +25,8 @@ const server = new Server()
           "Content-Type": "application/json",
         },
         message: JSON.stringify(message),
-      }));
-  })
+      })),
+  )
   .listen(PORT, HOST, () => {
     console.log(`Server running at http://${HOST}:${PORT}/`);
   });
