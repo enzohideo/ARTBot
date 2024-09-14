@@ -29,7 +29,23 @@ export default class Server {
   }
 
   post(path, action) {
-    return this.route(path, "POST", action);
+    return this.route(path, "POST", (req, res) =>
+      new Promise((resolve, reject) => {
+        let waiting = true;
+
+        const timeout = setTimeout(() => {
+          reject("No data received from request");
+          waiting = false;
+        }, 3000);
+
+        req.on("data", (buffer) => {
+          if (!waiting) return;
+          waiting = false;
+          clearTimeout(timeout);
+          resolve(buffer);
+        });
+      }).then((buffer) => action(req, res, buffer)),
+    );
   }
 
   get(path, action) {

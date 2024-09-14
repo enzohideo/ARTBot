@@ -14,37 +14,28 @@ const chat = new Chat({
 });
 
 const server = new Server()
-  .post(
-    "/api",
-    (req, res) =>
-      new Promise((resolve, reject) =>
-        req.on("data", (buffer) => {
-          const request = JSON.parse(buffer.toString("utf-8"));
+  .post("/api", (req, res, data) => {
+    const request = JSON.parse(data.toString("utf-8"));
 
-          if (!request || !request.content) {
-            reject(
-              `[ERR]: Request has no content.\n${JSON.stringify(request, null, 2)}`,
-            );
-            return;
-          }
+    if (!request || !request.prompt) {
+      throw new Error(
+        `Request has no prompt.\n${JSON.stringify(request, null, 2)}`,
+      );
+    }
 
-          chat
-            .send({
-              role: "user",
-              content: request.content,
-            })
-            .then((message) =>
-              resolve({
-                response: res,
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                message: JSON.stringify(message),
-              }),
-            );
-        }),
-      ),
-  )
+    return chat
+      .send({
+        role: "user",
+        content: request.prompt,
+      })
+      .then((message) => ({
+        response: res,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        message: JSON.stringify(message),
+      }));
+  })
   .listen(PORT, HOST, () => {
     console.log(`Server running at http://${HOST}:${PORT}/`);
   });
