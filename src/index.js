@@ -13,14 +13,14 @@ const chat = new Chat({
 });
 
 const server = new Server()
-  .post("/api", (req, res, data) =>
+  .post("/api", (_, response, data) =>
     chat
       .send({
         role: "user",
         ...JSON.parse(data.toString("utf-8")),
       })
       .then((message) => ({
-        response: res,
+        response,
         headers: {
           "Content-Type": "application/json",
         },
