@@ -12,14 +12,27 @@ const client = new OpenAI({
   baseURL: process.env["API_URL"],
 });
 
+const send = ({ res, statusCode = 200, headers = {}, message = "" }) => {
+  res.statusCode = 200;
+  for (const header of Object.entries(headers)) {
+    res.setHeader(...header);
+  }
+  res.end(message);
+};
+
 http
   .createServer((req, res) => {
+    // TODO: better routing
+    if (req.method !== "POST" || req.url !== "/api") {
+      send({ res, statusCode: 400 });
+      return;
+    }
+
     req.on("data", async (buffer) => {
       const request = JSON.parse(buffer.toString("utf-8"));
 
       if (!request || !request.content) {
-        res.statusCode = 400;
-        res.end();
+        send({ res, statusCode: 400 });
         return;
       }
 
@@ -33,9 +46,22 @@ http
         model: MODEL,
       });
 
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(response));
+      if (!response.choices || !response.choices.length) {
+        send({ res, statusCode: 400 });
+        return;
+      }
+
+      const message = response.choices[0].message;
+
+      messages.push(message);
+
+      send({
+        res,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        message: JSON.stringify(message),
+      });
     });
   })
   .listen(PORT, HOST, () => {
