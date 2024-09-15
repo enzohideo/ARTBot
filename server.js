@@ -1,5 +1,6 @@
 import Server from "./src/backend/http.js";
 import Chat from "./src/backend/chat.js";
+import Ui from "./src/backend/htmx.js";
 import path from "node:path";
 import getFile, { MIME_TYPES } from "./src/backend/file.js";
 
@@ -13,36 +14,51 @@ const chat = new Chat({
 });
 
 const server = new Server()
-  .post("/api/prompt", (_, response, data) =>
-    chat
+  .post("/api/prompt", (_, response, data) => {
+    data = JSON.parse(data.toString("utf-8"));
+
+    if (!data.model || !data.prompt)
+      throw new Error("Missing model and/or prompt.");
+
+    // TODO: Check if it's a valid model
+
+    response.writeHead(200, { "Content-Type": "text/html" });
+    response.write(
+      Ui.message(data.role || "data", data.content || data.prompt),
+    );
+
+    return chat
       .send({
         role: "user",
-        ...JSON.parse(data.toString("utf-8")),
+        ...data,
       })
       .then((message) => {
-        response.writeHead(200, {
-          "Content-Type": "text/html",
-        });
-
         const text = message.content.split("```");
         const code = text.splice(1, 1);
 
         if (code.length > 0) {
           response.write(`
-            <iframe id="view" hx-swap-oob="true" srcdoc='${code[0]
+            <iframe class="w-full h-full" id="view" hx-swap-oob="true" allowtransparency="true" srcdoc='${code[0]
               .replace("html\n", "")
+              .replace(
+                "<html",
+                `<html style='
+                  width: 100%;
+                  position: absolute; top: 50%; transform: translate(0, -50%);
+                  background: transparent;
+                '`,
+              )
+              .replace("<canvas", "<canvas style='width: 100%;'")
               .replace(/"/g, "&#34;")
               .replace(/'/g, "&#39;")}'></iframe>
           `);
         }
 
-        response.end(`
-          <div id="chat" hx-swap-oob="true">
-            ${text.join("<br>")}
-          </div>
-        `);
-      }),
-  )
+        response.end(
+          Ui.message(message.role, text.join("<br><br>").replace(":", ".")),
+        );
+      });
+  })
   .get("/api/model", (_, response) => {
     response.writeHead(200, {
       "Content-Type": "text/html",
