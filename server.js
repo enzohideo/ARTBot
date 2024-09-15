@@ -24,15 +24,12 @@ server
         role: "user",
         ...JSON.parse(data.toString("utf-8")),
       })
-      .then((message) =>
-        server.send({
-          response,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          message: JSON.stringify(message),
-        }),
-      ),
+      .then((message) => {
+        response.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+        response.end(JSON.stringify(message));
+      }),
   )
   .listen(PORT, HOST, () => {
     console.log(`Server running at http://${HOST}:${PORT}/`);
