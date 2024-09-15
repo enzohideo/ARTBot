@@ -5,7 +5,7 @@
   "main": "./server.js",
   "scripts": {
     "start": "node --env-file=.env ./server.js",
-    "lint": "prettier ./src/backend ./server.js --write"
+    "lint": "prettier ./src/backend ./src/frontend/*.html ./server.js --write"
   },
   "keywords": [
     "chatbot",
