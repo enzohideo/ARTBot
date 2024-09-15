@@ -43,6 +43,24 @@ const server = new Server()
         `);
       }),
   )
+  .get("/api/model", (_, response) => {
+    response.writeHead(200, {
+      "Content-Type": "text/html",
+    });
+    // FIXME: Maritalk API does not seem to support the 'list models' request yet
+    const models = [
+      "sabia-3",
+      "sabia-2-medium",
+      "sabia-2-small",
+      // "sabia-2-medium-2024-03-13",
+      // "sabia-2-small-2024-03-13",
+    ];
+    response.end(
+      models
+        .map((model) => `<option value="${model}">${model}</option>`)
+        .join(""),
+    );
+  })
   .get("/*", (request, response) =>
     getFile(FRONTEND_PATH, request.url).then((file) => {
       response.writeHead(file.ok ? 200 : 404, {
