@@ -1,7 +1,8 @@
-const message = (role, text, date = new Date()) =>
-  !text
-    ? ""
-    : `
+export default {
+  message: (role, text, date = new Date()) =>
+    !text
+      ? ""
+      : `
 <div id="chat" hx-swap-oob="beforeend">
   <div class="border-b border-gray-600 flex items-start py-4 text-sm">
     <div class="relative w-10 h-10 mr-3 bg-gray-800 overflow-hidden rounded-full">
@@ -16,8 +17,11 @@ const message = (role, text, date = new Date()) =>
     </div>
   </div>
 </div>
-`;
-
-export default {
-  message,
+  `,
+  options: (opts, classList = []) =>
+    opts.reduce(
+      (acc, opt) =>
+        `${acc}<option class="${classList.join()}" value="${opt}">${opt}</option>`,
+      "",
+    ),
 };

@@ -81,11 +81,7 @@ const server = new Server()
     response.writeHead(200, {
       "Content-Type": "text/html",
     });
-    response.end(
-      MODELS.map((model) => `<option value="${model}">${model}</option>`).join(
-        "",
-      ),
-    );
+    response.end(Ui.options(MODELS));
   })
   .get("/*", (request, response) =>
     getFile(FRONTEND_PATH, request.url).then((file) => {
