@@ -12,16 +12,8 @@ const chat = new Chat({
   baseURL: process.env["API_URL"],
 });
 
-const server = new Server();
-
-server
-  .get("/", (_, response) => {
-    response.writeHead(200, {
-      "Content-Type": "text/html",
-    });
-    response.end(`<html><body>Hello World</body></html>`);
-  })
-  .post("/api", (_, response, data) =>
+const server = new Server()
+  .post("/api/prompt", (_, response, data) =>
     chat
       .send({
         role: "user",
@@ -29,9 +21,23 @@ server
       })
       .then((message) => {
         response.writeHead(200, {
-          "Content-Type": "application/json",
+          "Content-Type": "text/html",
         });
-        response.end(JSON.stringify(message));
+
+        const text = message.content.split("```");
+        const code = text.splice(1, 1);
+
+        if (code.length > 0) {
+          response.write(`
+            <iframe id="view" hx-swap-oob="true" srcdoc='${code[0]}'></iframe>
+          `);
+        }
+
+        response.end(`
+          <div id="chat" hx-swap-oob="true">
+            ${text.join("<br>")}
+          </div>
+        `);
       }),
   )
   .get("/*", (request, response) =>
