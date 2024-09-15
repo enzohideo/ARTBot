@@ -72,6 +72,7 @@ export default class Server {
   }
 
   send({ response, statusCode = 200, headers = {}, message = "" }) {
+    if (response.finished) return;
     response.writeHead(statusCode, headers);
     response.end(message);
     return this;
