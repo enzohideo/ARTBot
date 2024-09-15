@@ -8,6 +8,15 @@ const HOST = process.env["HOST"];
 const PORT = process.env["PORT"];
 const FRONTEND_PATH = path.join(process.cwd(), "./src/frontend");
 
+// FIXME: Maritalk API does not seem to support the 'list models' request yet
+const MODELS = [
+  "sabia-3",
+  "sabia-2-medium",
+  "sabia-2-small",
+  // "sabia-2-medium-2024-03-13",
+  // "sabia-2-small-2024-03-13",
+];
+
 const chat = new Chat({
   apiKey: process.env["API_KEY"],
   baseURL: process.env["API_URL"],
@@ -17,10 +26,8 @@ const server = new Server()
   .post("/api/prompt", (_, response, data) => {
     data = JSON.parse(data.toString("utf-8"));
 
-    if (!data.model || !data.prompt)
-      throw new Error("Missing model and/or prompt.");
-
-    // TODO: Check if it's a valid model
+    if (!data.model || !data.prompt || !MODELS.includes(data.model))
+      throw new Error(`Missing model and/or prompt. ${JSON.stringify(data, null, 2)}`);
 
     response.writeHead(200, { "Content-Type": "text/html" });
     response.write(
@@ -63,16 +70,8 @@ const server = new Server()
     response.writeHead(200, {
       "Content-Type": "text/html",
     });
-    // FIXME: Maritalk API does not seem to support the 'list models' request yet
-    const models = [
-      "sabia-3",
-      "sabia-2-medium",
-      "sabia-2-small",
-      // "sabia-2-medium-2024-03-13",
-      // "sabia-2-small-2024-03-13",
-    ];
     response.end(
-      models
+      MODELS
         .map((model) => `<option value="${model}">${model}</option>`)
         .join(""),
     );
