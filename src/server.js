@@ -1,8 +1,8 @@
-import Server from "./src/backend/http.js";
-import Chat from "./src/backend/chat.js";
-import Ui from "./src/frontend/htmx.js";
+import Server from "./backend/http.js";
+import Chat from "./backend/chat.js";
+import Ui from "./frontend/htmx.js";
 import path from "node:path";
-import getFile, { MIME_TYPES } from "./src/backend/file.js";
+import getFile, { MIME_TYPES } from "./backend/file.js";
 
 const HOST = process.env["HOST"];
 const PORT = process.env["PORT"];

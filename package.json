@@ -2,12 +2,12 @@
   "name": "codelab-chatbot",
   "version": "1.0.0",
   "description": "codelab chatbot 2024",
-  "main": "./server.js",
+  "main": "./src/server.js",
   "scripts": {
-    "start": "node --env-file=.env ./server.js",
+    "start": "node --env-file=.env ./src/server.js",
     "dev": "npm run style && npm start",
     "style": "tailwindcss -i ./src/frontend/tailwind.css -o ./src/frontend/style.css",
-    "lint": "prettier ./src/backend ./src/frontend/*.html ./src/frontend/htmx.js ./server.js --write"
+    "lint": "prettier ./src/backend ./src/frontend/*.html ./src/frontend/htmx.js ./src/server.js --write"
   },
   "keywords": [
     "chatbot",
