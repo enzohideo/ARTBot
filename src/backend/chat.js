@@ -2,9 +2,18 @@ import OpenAI from "openai";
 
 export default class Chat {
   messages = [];
+  #models;
 
   constructor(...args) {
     this.client = new OpenAI(...args);
+  }
+
+  models() {
+    if (this.#models) return this.#models;
+    return this.client.models.list().then((m) => {
+      this.#models = m;
+      return m;
+    });
   }
 
   send({ role = "user", content, prompt, model, ...rest }) {
