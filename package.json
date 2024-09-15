@@ -2,9 +2,9 @@
   "name": "codelab-chatbot",
   "version": "1.0.0",
   "description": "codelab chatbot 2024",
-  "main": "./src/index.js",
+  "main": "./server.js",
   "scripts": {
-    "start": "node --env-file=.env ./src/index.js",
+    "start": "node --env-file=.env ./server.js",
     "lint": "prettier ./src --write"
   },
   "keywords": [

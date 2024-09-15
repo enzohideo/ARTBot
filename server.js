@@ -1,5 +1,5 @@
-import Server from "./server.js";
-import Chat from "./chat.js";
+import Server from "./src/backend/http.js";
+import Chat from "./src/backend/chat.js";
 
 const HOST = process.env["HOST"];
 const PORT = process.env["PORT"];
