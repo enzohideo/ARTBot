@@ -5,9 +5,11 @@ export default class Server {
 
   constructor() {
     this.server = http.createServer((req, res) => {
-      let routerKey;
+      let layer = this.router[req.url];
 
-      if (!(req.url in this.router)) {
+      if (!layer) {
+        let routerKey;
+
         for (const key of Object.keys(this.router)) {
           const regex = new RegExp(key);
           if (!regex.test(req.url)) continue;
@@ -20,19 +22,19 @@ export default class Server {
           this.send({ response: res, statusCode: 400 });
           return;
         }
-      } else {
-        routerKey = req.url;
+
+        layer = this.router[routerKey];
       }
 
-      if (!(req.method in this.router[routerKey])) {
+      layer = layer[req.method];
+
+      if (!layer) {
         console.log("Method not mapped:", req.url, req.method);
         this.send({ response: res, statusCode: 400 });
         return;
       }
 
-      const action = this.router[routerKey][req.method];
-
-      action(req, res).catch((e) => {
+      layer(req, res).catch((e) => {
         console.log(e);
         this.send({ response: res, statusCode: 400 });
       });
