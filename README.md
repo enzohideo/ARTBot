@@ -2,25 +2,32 @@
 
 ## Usage
 
-### Server
+Start the server
 
 ```sh
 npm i --frozen-lockfile
 npm start
 ```
 
-### CURL Client
-
-Get web page
+Open the web page
 
 ```sh
-curl localhost:8080
+firefox localhost:8080
 ```
 
-Test inner API
+## Development
+
+Update Tailwind style and run the server
 
 ```sh
-curl -X "POST" -d '{"content": "Hello! Tell me a joke", "model": "sabia-3"}' localhost:8080/api
+npm run dev
+```
+
+Testing the inner API with cURL
+
+```sh
+curl -X "POST" -d '{"prompt": "Hello! Tell me a joke", "model": "sabia-3"}' localhost:8080/api/prompt
+curl -X "GET" localhost:8080/api/models
 ```
 
 ## Nix/NixOS
