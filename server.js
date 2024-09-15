@@ -29,7 +29,10 @@ const server = new Server()
 
         if (code.length > 0) {
           response.write(`
-            <iframe id="view" hx-swap-oob="true" srcdoc='${code[0]}'></iframe>
+            <iframe id="view" hx-swap-oob="true" srcdoc='${code[0]
+              .replace("html\n", "")
+              .replace(/"/g, "&#34;")
+              .replace(/'/g, "&#39;")}'></iframe>
           `);
         }
 
