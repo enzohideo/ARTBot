@@ -16,12 +16,29 @@ export default {
       <p class="text-white leading-normal">${text}</p>
     </div>
   </div>
-</div>
-  `,
+</div>`,
+
   options: (opts, classList = []) =>
     opts.reduce(
       (acc, opt) =>
         `${acc}<option class="${classList.join()}" value="${opt}">${opt}</option>`,
       "",
     ),
+
+  iframe: (
+    code,
+  ) => `<iframe class="w-full h-full" id="view" hx-swap-oob="true" allowtransparency="true" srcdoc='${code
+    .replace("html\n", "")
+    .replace(
+      "<html",
+      `<html style='
+        width: 100%;
+        position: absolute; top: 50%; transform: translate(0, -50%);
+        background: transparent;
+      '`,
+    )
+    .replace("<canvas", "<canvas style='width: 100%;'")
+    .replace(/"/g, "&#34;")
+    .replace(/'/g, "&#39;")}'>
+  </iframe>`,
 };

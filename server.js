@@ -54,23 +54,7 @@ const server = new Server()
         const text = message.content.split("```");
         const code = text.splice(1, 1);
 
-        if (code.length > 0) {
-          response.write(`
-            <iframe class="w-full h-full" id="view" hx-swap-oob="true" allowtransparency="true" srcdoc='${code[0]
-              .replace("html\n", "")
-              .replace(
-                "<html",
-                `<html style='
-                  width: 100%;
-                  position: absolute; top: 50%; transform: translate(0, -50%);
-                  background: transparent;
-                '`,
-              )
-              .replace("<canvas", "<canvas style='width: 100%;'")
-              .replace(/"/g, "&#34;")
-              .replace(/'/g, "&#39;")}'></iframe>
-          `);
-        }
+        if (code.length > 0) response.write(Ui.iframe(code[0]));
 
         response.end(
           Ui.message(message.role, text.join("<br><br>").replace(":", ".")),
