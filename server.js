@@ -26,12 +26,23 @@ const server = new Server()
   .post("/api/prompt", (_, response, data) => {
     data = JSON.parse(data.toString("utf-8"));
 
-    if (!data.model || !data.prompt || !MODELS.includes(data.model))
-      throw new Error(`Missing model and/or prompt. ${JSON.stringify(data, null, 2)}`);
+    if (!data.model || !data.prompt || !MODELS.includes(data.model)) {
+      response.writeHead(200, { "Content-Type": "text/html" });
+      response.end(
+        Ui.message(
+          "system",
+          `Invalid model and/or prompt.<br><br>
+          prompt: ${data.prompt}<br>
+          model: ${data.model}
+        `,
+        ),
+      );
+      return;
+    }
 
     response.writeHead(200, { "Content-Type": "text/html" });
     response.write(
-      Ui.message(data.role || "data", data.content || data.prompt),
+      Ui.message(data.role || "user", data.content || data.prompt),
     );
 
     return chat
