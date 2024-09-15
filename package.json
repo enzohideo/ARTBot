@@ -5,6 +5,7 @@
   "main": "./server.js",
   "scripts": {
     "start": "node --env-file=.env ./server.js",
+    "style": "tailwindcss -i ./src/frontend/tailwind.css -o ./src/frontend/style.css",
     "lint": "prettier ./src/backend ./src/frontend/*.html ./server.js --write"
   },
   "keywords": [
@@ -17,5 +18,8 @@
   "dependencies": {
     "openai": "^4.60.1",
     "prettier": "^3.3.3"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.11"
   }
 }

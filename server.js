@@ -1,6 +1,6 @@
 import Server from "./src/backend/http.js";
 import Chat from "./src/backend/chat.js";
-import Ui from "./src/backend/htmx.js";
+import Ui from "./src/frontend/htmx.js";
 import path from "node:path";
 import getFile, { MIME_TYPES } from "./src/backend/file.js";
 
@@ -82,9 +82,9 @@ const server = new Server()
       "Content-Type": "text/html",
     });
     response.end(
-      MODELS
-        .map((model) => `<option value="${model}">${model}</option>`)
-        .join(""),
+      MODELS.map((model) => `<option value="${model}">${model}</option>`).join(
+        "",
+      ),
     );
   })
   .get("/*", (request, response) =>
