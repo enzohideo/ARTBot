@@ -5,13 +5,32 @@ export default class Server {
 
   constructor() {
     this.server = http.createServer((req, res) => {
-      if (!(req.url in this.router) || !(req.method in this.router[req.url])) {
-        console.log(req.url, req.method);
+      let routerKey;
+
+      if (!(req.url in this.router)) {
+        for (const key of Object.keys(this.router)) {
+          const regex = new RegExp(key);
+          if (!regex.test(req.url)) continue;
+          routerKey = key;
+          break;
+        }
+
+        if (!routerKey) {
+          console.log("Route not found:", req.url, req.method);
+          this.send({ response: res, statusCode: 400 });
+          return;
+        }
+      } else {
+        routerKey = req.url;
+      }
+
+      if (!(req.method in this.router[routerKey])) {
+        console.log("Method not mapped:", req.url, req.method);
         this.send({ response: res, statusCode: 400 });
         return;
       }
 
-      const action = this.router[req.url][req.method];
+      const action = this.router[routerKey][req.method];
 
       action(req, res).catch((e) => {
         console.log(e);
