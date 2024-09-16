@@ -29,20 +29,23 @@ const server = new Server()
     if (!data.model || !data.prompt || !MODELS.includes(data.model)) {
       response.writeHead(200, { "Content-Type": "text/html" });
       response.end(
-        Ui.message(
-          "system",
-          `Invalid model and/or prompt.<br><br>
-          prompt: ${data.prompt}<br>
-          model: ${data.model}
-        `,
-        ),
+        Ui.message({
+          role: "system",
+          text: `Invalid model and/or prompt.<br><br>
+            prompt: ${data.prompt}<br>
+            model: ${data.model}
+          `,
+        }),
       );
       return;
     }
 
     response.writeHead(200, { "Content-Type": "text/html" });
     response.write(
-      Ui.message(data.role || "user", data.content || data.prompt),
+      Ui.message({
+        role: data.role || "user",
+        text: data.content || data.prompt,
+      }),
     );
 
     return chat
@@ -54,10 +57,13 @@ const server = new Server()
         const text = message.content.split("```");
         const code = text.splice(1, 1);
 
-        if (code.length > 0) response.write(Ui.iframe(code[0]));
+        if (code.length > 0) response.write(Ui.iframe({ html: code[0] }));
 
         response.end(
-          Ui.message(message.role, text.join("<br><br>").replace(":", ".")),
+          Ui.message({
+            role: message.role,
+            text: text.join("<br><br>").replace(":", "."),
+          }),
         );
       });
   })
@@ -65,7 +71,7 @@ const server = new Server()
     response.writeHead(200, {
       "Content-Type": "text/html",
     });
-    response.end(Ui.options(MODELS));
+    response.end(Ui.options({ opts: MODELS }));
   })
   .get("/*", (request, response) =>
     getFile(FRONTEND_PATH, request.url).then((file) => {
