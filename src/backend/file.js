@@ -16,7 +16,7 @@ export const MIME_TYPES = {
 const toBool = [() => true, () => false];
 
 export default async (base, url) => {
-  const paths = [base, url.endsWith("/") ? "/index.html" : url];
+  const paths = [base, url.endsWith("/") ? "/pages/main/index.html" : url];
 
   const filePath = path.join(...paths);
 
@@ -28,7 +28,7 @@ export default async (base, url) => {
       () => false,
     ));
 
-  const streamPath = found ? filePath : base + "/404.html";
+  const streamPath = found ? filePath : base + "/pages/404/index.html";
 
   return {
     ok: found,

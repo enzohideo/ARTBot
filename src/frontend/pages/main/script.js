@@ -1,4 +1,4 @@
-import Ui from "./htmx.js";
+import Ui from "../../htmx.js";
 
 document.body.addEventListener("htmx:beforeRequest", function (evt) {
   const prompt = evt.detail.elt;

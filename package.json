@@ -7,7 +7,7 @@
     "start": "node --env-file=.env ./src/server.js",
     "dev": "npm run style && npm start",
     "style": "tailwindcss -i ./src/frontend/tailwind.css -o ./src/frontend/style.css",
-    "lint": "prettier ./src/backend ./src/frontend/*.html ./src/frontend/{htmx,script}.js ./src/server.js --write"
+    "lint": "prettier ./src/backend ./src/frontend/pages/**/*.{js,html} ./src/frontend/htmx.js ./src/server.js --write"
   },
   "keywords": [
     "chatbot",
