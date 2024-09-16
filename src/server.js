@@ -40,14 +40,6 @@ const server = new Server()
       return;
     }
 
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.write(
-      Ui.message({
-        role: data.role || "user",
-        text: data.content || data.prompt,
-      }),
-    );
-
     return chat
       .send({
         role: "user",
