@@ -1,3 +1,20 @@
+// https://htmx.org/essays/web-security-basics-with-htmx/#always-use-an-auto-escaping-template-engine
+export function escapeHtmlText(value) {
+  const stringValue = value.toString();
+  const entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "/": "&#x2F;",
+    "`": "&grave;",
+    "=": "&#x3D;",
+  };
+  const regex = /[&<>"'`=/]/g;
+  return stringValue.replace(regex, (match) => entityMap[match]);
+}
+
 export default {
   message: ({ role, text, swap = true, date = new Date() }) =>
     !text
@@ -26,20 +43,25 @@ ${swap ? "</div>" : ""}
       "",
     ),
 
-  iframe: ({
-    html,
-  }) => `<iframe class="w-full h-full" id="view" hx-swap-oob="true" allowtransparency="true" srcdoc='${html
-    .replace("html\n", "")
-    .replace(
-      "<html",
-      `<html style='
-        width: 100%;
-        position: absolute; top: 50%; transform: translate(0, -50%);
-        background: transparent;
-      '`,
-    )
-    .replace("<canvas", "<canvas style='width: 100%;'")
-    .replace(/"/g, "&#34;")
-    .replace(/'/g, "&#39;")}'>
-  </iframe>`,
+  iframe: ({ html }) => `
+    <iframe
+      sandbox="allow-scripts"
+      class="w-full h-full"
+      id="view"
+      hx-swap-oob="true"
+      allowtransparency="true"
+      srcdoc='${escapeHtmlText(
+        html
+          .replace("html\n", "")
+          .replace(
+            "<html",
+            `<html style='
+              width: 100%;
+              position: absolute; top: 50%; transform: translate(0, -50%);
+              background: transparent;
+            '`,
+          )
+          .replace("<canvas", "<canvas style='width: 100%;'"),
+      )}'
+    ></iframe>`,
 };

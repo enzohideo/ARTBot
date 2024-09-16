@@ -1,6 +1,6 @@
 import Server from "./backend/http.js";
 import Chat from "./backend/chat.js";
-import Ui from "./frontend/htmx.js";
+import Ui, { escapeHtmlText } from "./frontend/htmx.js";
 import path from "node:path";
 import getFile, { MIME_TYPES } from "./backend/file.js";
 
@@ -54,7 +54,7 @@ const server = new Server()
         response.end(
           Ui.message({
             role: message.role,
-            text: text.join("<br><br>").replace(":", "."),
+            text: text.map(escapeHtmlText).join("<br><br>"),
           }),
         );
       });
