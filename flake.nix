@@ -1,5 +1,5 @@
 {
-  description = "Codelab Chatbot";
+  description = "ART Bot";
 
   outputs =
     {

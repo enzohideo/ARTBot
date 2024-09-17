@@ -1,7 +1,7 @@
 {
-  "name": "codelab-chatbot",
+  "name": "ARTBot",
   "version": "1.0.0",
-  "description": "codelab chatbot 2024",
+  "description": "USP codelab 2024",
   "main": "./src/server.js",
   "scripts": {
     "start": "node --env-file=.env ./src/server.js",
@@ -11,11 +11,12 @@
   },
   "keywords": [
     "chatbot",
-    "codelab"
+    "codelab",
+    "art",
+    "web"
   ],
   "type": "module",
   "author": "",
-  "license": "ISC",
   "dependencies": {
     "openai": "^4.60.1",
     "prettier": "^3.3.3"
