@@ -23,10 +23,7 @@ export default async (base, url) => {
   const pathTraversal = !filePath.startsWith(base);
   const found =
     !pathTraversal &&
-    (await fs.promises.access(filePath).then(
-      () => true,
-      () => false,
-    ));
+    (await fs.promises.access(filePath).then(...toBool));
 
   const streamPath = found ? filePath : base + "/pages/404/index.html";
 
