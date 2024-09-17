@@ -18,10 +18,10 @@
   "type": "module",
   "author": "",
   "dependencies": {
-    "openai": "^4.60.1",
-    "prettier": "^3.3.3"
+    "openai": "^4.60.1"
   },
   "devDependencies": {
+    "prettier": "^3.3.3",
     "tailwindcss": "^3.4.11"
   }
 }
