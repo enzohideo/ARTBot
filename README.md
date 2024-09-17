@@ -2,10 +2,15 @@
 
 ## Usage
 
+Install required dependencies
+
+```sh
+npm i --frozen-lockfile --omit=dev
+```
+
 Start the server
 
 ```sh
-npm i --frozen-lockfile
 npm start
 ```
 
@@ -16,6 +21,12 @@ firefox localhost:8080
 ```
 
 ## Development
+
+Install all dependencies
+
+```
+npm i --frozen-lockfile
+```
 
 Update Tailwind style and run the server
 
