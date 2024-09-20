@@ -16,7 +16,7 @@ export default class Chat {
     });
   }
 
-  send({ role = "user", content, prompt, model, ...rest }) {
+  send({ role = "user", content, prompt, model, context, ...rest }) {
     if (!model || (!content && !prompt))
       throw new Error("Missing prompt or model");
 
@@ -24,7 +24,9 @@ export default class Chat {
 
     return this.client.chat.completions
       .create({
-        messages: this.messages,
+        messages: this.messages.slice(
+          context < -1 ? this.messages.length : context + 1,
+        ),
         model: model,
         ...rest,
       })

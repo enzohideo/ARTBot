@@ -32,7 +32,19 @@
         <div
           class="border-b text-xl border-gray-600 text-gray-200 font-bold flex px-4 py-4 flex-none shadow-xl"
         >
-          ART Bot
+          <p>ART Bot</p>
+          <form class="ml-auto">
+            <select
+              id="context"
+              class="rounded-lg bg-gray-700 text-gray-600 text-white text-sm text-center h-full p-2"
+            >
+              <option value="0" selected>No context</option>
+              <option value="1">1 message</option>
+              <option value="2">2 messages</option>
+              <option value="3">3 messages</option>
+              <option value="-1">All messages</option>
+            </select>
+          </form>
         </div>
         <!-- Chat messages -->
         <div class="px-6 flex-1 overflow-y-scroll" id="chat"></div>
@@ -44,7 +56,10 @@
               id="prompt"
               name="prompt"
               hx-post="/api/prompt"
-              hx-vals='js:{model: document.getElementById("model").selectedOptions[0].value}'
+              hx-vals='js:{
+                model: document.getElementById("model").selectedOptions[0].value,
+                context: document.getElementById("context").selectedOptions[0].value
+              }'
               hx-ext="json-enc"
               hx-trigger="keyup[key=='Enter']"
               hx-on::after-request="this.value=''"
