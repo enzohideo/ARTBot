@@ -25,7 +25,7 @@ export default class Chat {
     return this.client.chat.completions
       .create({
         messages: this.messages.slice(
-          context < -1 ? this.messages.length : context + 1,
+          context < 0 ? 0 : - context - 1,
         ),
         model: model,
         ...rest,
