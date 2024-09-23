@@ -6,6 +6,10 @@
     <title></title>
     <script src="htmx.min.js"></script>
     <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/dark.min.css"
+    />
     <script src="https://unpkg.com/htmx-ext-sse@2.2.2/sse.js"></script>
     <script>
       htmx.defineExtension("json-enc", {
@@ -30,10 +34,10 @@
       <div class="flex flex-1 flex-col bg-gray-800 overflow-hidden">
         <!-- Top bar -->
         <div
-          class="border-b text-xl border-gray-600 text-gray-200 font-bold flex px-4 py-4 shadow-xl"
+          class="border-b text-xl border-gray-600 text-gray-200 font-bold flex justify-between px-4 py-4 shadow-xl"
         >
           <p class="my-auto">ART Bot</p>
-          <form class="ml-auto">
+          <form>
             <select
               id="context"
               class="rounded-lg bg-gray-700 text-white text-sm text-center h-full p-2"
@@ -62,7 +66,7 @@
         ></div>
         <!-- Chat messages -->
         <div class="px-6 flex-1 overflow-y-scroll" id="chat"></div>
-        <div class="w-full inline-flex pb-6 px-4">
+        <div class="bg-gray-800 pt-3 w-full inline-flex pb-6 px-4">
           <input
             type="text"
             class="rounded-l-lg w-full px-3 py-2 disabled:bg-gray-700 bg-gray-600 disabled:text-gray-500 text-gray-200 focus:outline-none"

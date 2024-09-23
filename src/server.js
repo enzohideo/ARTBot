@@ -1,9 +1,11 @@
 import Server from "./backend/http.js";
 import Chat from "./backend/chat.js";
 import parseStream from "./backend/parse.js";
-import Ui, { escapeHtmlText } from "./frontend/htmx.js";
-import path from "node:path";
 import getFile, { MIME_TYPES } from "./backend/file.js";
+import Ui, { escapeHtmlText } from "./frontend/htmx.js";
+
+import path from "node:path";
+import hljs from "highlight.js";
 
 const HOST = process.env["HOST"];
 const PORT = process.env["PORT"];
@@ -56,6 +58,8 @@ const server = new Server()
       })}
     `);
 
+    let codeId;
+
     return chat
       .send({
         role: "user",
@@ -68,16 +72,51 @@ const server = new Server()
           chunkParser: (chunk) => chunk.choices[0]?.delta?.content || "",
           handlers: [
             (text, transition, acc) => {
-              const message = Ui.messageContent({
-                id,
-                text: escapeHtmlText(text).replace(/\n/g, "<br>"),
-              });
-              if (message && chat.sse) chat.sse(message);
+              if (!chat.sse) return;
+
+              chat.sse(
+                Ui.swap({
+                  id,
+                  text: escapeHtmlText(text)
+                    .replace(/\n/g, "<br>")
+                    .replace(/<br><br>/g, "<br>"),
+                }),
+              );
+
+              codeId = `code-${id}-${Date.now()}`;
+
+              if (transition)
+                chat.sse(
+                  Ui.swap({
+                    id,
+                    text: Ui.code({ id: codeId }),
+                  }),
+                );
             },
             (text, transition, acc) => {
-              if (!transition) return;
-              const message = Ui.iframe({ html: acc });
-              if (message && chat.sse) chat.sse(message);
+              if (!chat.sse) return;
+
+              if (transition) {
+                const languageIndex = acc.search(/[^A-Za-z]/);
+
+                chat.sse(Ui.iframe({ html: acc }));
+                chat.sse(
+                  Ui.swap({
+                    swap: true,
+                    id: codeId,
+                    text: hljs.highlight(acc.slice(languageIndex + 1), {
+                      language: acc.slice(0, languageIndex),
+                    }).value,
+                  }),
+                );
+              } else {
+                chat.sse(
+                  Ui.swap({
+                    id: codeId,
+                    text: hljs.highlight(text, { language: "html" }).value,
+                  }),
+                );
+              }
             },
           ],
         }),
