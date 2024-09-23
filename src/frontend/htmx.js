@@ -39,8 +39,18 @@ export default {
 ${swap ? "</div>" : ""}`,
 
   code: ({ id, language = "html" }) => `
-    <div class="rounded-lg px-6 py-3 my-3 bg-gray-700 overflow-x-scroll w-full">
-      <pre><code class="language-${language}"><div id="${id}"></div></code></pre>
+    <div class="rounded-lg p-3 my-3 bg-gray-800 border-gray-600 border w-full">
+      <div class="flex justify-between border-b text-md border-gray-600 pb-2 mb-2 shadow">
+        <p>Code</p>
+        <button
+          hx-on:click='navigator.clipboard.writeText(document.getElementById("${id}").innerText)'
+        >
+          <svg class="h-4 w-4 text-gray-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+        </button>
+      </div>
+      <div class="px-3 rounded-lg bg-gray-700 overflow-x-scroll p-2">
+        <pre><code class="language-${language}"><div id="${id}"></div></code></pre>
+      </div>
     </div>`,
 
   options: ({ opts, classList = [] }) =>
