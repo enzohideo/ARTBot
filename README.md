@@ -31,13 +31,23 @@ npm i --frozen-lockfile
 Update Tailwind style and run the server
 
 ```sh
+# Lints the code using prettier
+npm run lint
+
+# Generates style.css using tailwind
+npm run style
+
+# Runs the server
 npm run dev
+
+# Runs npm style && npm run dev
+npm start
 ```
 
 Testing the inner API with cURL
 
 ```sh
-curl -X "POST" -d '{"prompt": "Hello! Tell me a joke", "model": "sabia-3"}' localhost:8080/api/prompt
+curl -X "POST" -d '{"prompt": "Hello! Tell me a joke", "model": "sabia-3", "context": "0"}' localhost:8080/api/prompt
 curl -X "GET" localhost:8080/api/models
 ```
 
