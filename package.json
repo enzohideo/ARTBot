@@ -4,8 +4,8 @@
   "description": "USP codelab 2024",
   "main": "./src/server.js",
   "scripts": {
-    "start": "node --env-file=.env ./src/server.js",
-    "dev": "npm run style && npm start",
+    "start": "npm run style && npm run dev",
+    "dev": "node --env-file=.env ./src/server.js",
     "style": "tailwindcss -i ./src/frontend/tailwind.css -o ./src/frontend/style.css",
     "lint": "prettier ./src/backend ./src/frontend/pages/**/*.{js,html} ./src/frontend/htmx.js ./src/server.js --write"
   },
@@ -19,10 +19,10 @@
   "author": "",
   "dependencies": {
     "highlight.js": "^11.10.0",
-    "openai": "^4.60.1"
+    "openai": "^4.60.1",
+    "tailwindcss": "^3.4.12"
   },
   "devDependencies": {
-    "prettier": "^3.3.3",
-    "tailwindcss": "^3.4.11"
+    "prettier": "^3.3.3"
   }
 }
