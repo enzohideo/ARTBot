@@ -16,11 +16,11 @@ export function escapeHtmlText(value) {
 }
 
 export default {
-  message: ({ role, text, swap = true, date = new Date() }) =>
-    !text
-      ? ""
-      : `
-${swap ? '<div id="chat" hx-swap-oob="beforeend">' : ""}
+  messageContent: ({ text, id }) => `
+    <p hx-swap-oob="beforeend" id="${id}" >${text}</p>
+  `,
+  message: ({ role, text, swap = true, date = new Date(), id }) => `
+  ${swap ? '<div id="chat" hx-swap-oob="beforeend">' : ""}
   <div class="border-b border-gray-600 flex items-start py-4 text-sm">
     <div class="relative w-10 h-10 mr-3 bg-gray-800 overflow-hidden rounded-full">
       <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
@@ -30,11 +30,12 @@ ${swap ? '<div id="chat" hx-swap-oob="beforeend">' : ""}
         <span class="font-bold text-blue-300">${role}</span>
         <span class="font-bold text-gray-400 text-xs">${date.getHours()}:${date.getMinutes()}</span>
       </div>
-      <p class="text-white leading-normal">${text}</p>
+      <div class="text-white leading-normal">
+        <p ${id ? `id="${id}"` : ""}>${text}</p>
+      </div>
     </div>
   </div>
-${swap ? "</div>" : ""}
-`,
+${swap ? "</div>" : ""}`,
 
   options: ({ opts, classList = [] }) =>
     opts.reduce(

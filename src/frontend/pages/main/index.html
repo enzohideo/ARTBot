@@ -6,6 +6,7 @@
     <title></title>
     <script src="htmx.min.js"></script>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/htmx-ext-sse@2.2.2/sse.js"></script>
     <script>
       htmx.defineExtension("json-enc", {
         onEvent: function (name, evt) {
@@ -46,6 +47,12 @@
             </select>
           </form>
         </div>
+        <div
+          hx-ext="sse"
+          style="display: none"
+          sse-connect="/sse"
+          sse-swap="message"
+        ></div>
         <!-- Chat messages -->
         <div class="px-6 flex-1 overflow-y-scroll" id="chat"></div>
         <div class="pb-6 px-4 flex-none">
