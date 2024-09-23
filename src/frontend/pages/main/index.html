@@ -30,19 +30,27 @@
       <div class="flex flex-1 flex-col bg-gray-800 overflow-hidden">
         <!-- Top bar -->
         <div
-          class="border-b text-xl border-gray-600 text-gray-200 font-bold flex px-4 py-4 flex-none shadow-xl"
+          class="border-b text-xl border-gray-600 text-gray-200 font-bold flex px-4 py-4 shadow-xl"
         >
-          <p>ART Bot</p>
+          <p class="my-auto">ART Bot</p>
           <form class="ml-auto">
             <select
               id="context"
-              class="rounded-lg bg-gray-700 text-gray-600 text-white text-sm text-center h-full p-2"
+              class="rounded-lg bg-gray-700 text-white text-sm text-center h-full p-2"
             >
               <option value="0" selected>No context</option>
               <option value="1">1 message</option>
               <option value="2">2 messages</option>
               <option value="3">3 messages</option>
               <option value="-1">All messages</option>
+            </select>
+            <select
+              id="model"
+              hx-get="/api/model"
+              hx-trigger="click once"
+              class="rounded-lg bg-gray-700 text-white text-sm text-center h-full p-3"
+            >
+              <option selected>Choose a model</option>
             </select>
           </form>
         </div>
@@ -54,36 +62,41 @@
         ></div>
         <!-- Chat messages -->
         <div class="px-6 flex-1 overflow-y-scroll" id="chat"></div>
-        <div class="pb-6 px-4 flex-none">
-          <div class="w-full inline-flex">
-            <input
-              type="text"
-              class="rounded-l-lg w-full disabled:bg-gray-700 bg-gray-600 disabled:text-gray-500 text-gray-200 focus:outline-none px-3"
-              id="prompt"
-              name="prompt"
-              hx-post="/api/prompt"
-              hx-vals='js:{
-                model: document.getElementById("model").selectedOptions[0].value,
-                context: document.getElementById("context").selectedOptions[0].value
-              }'
-              hx-ext="json-enc"
-              hx-trigger="keyup[key=='Enter']"
-              hx-on::after-request="this.value=''"
-              hx-swap="none scroll:#chat:bottom"
-              hx-disabled-elt="this"
-              placeholder="Prompt..."
-            />
-            <form class="ml-auto rounded-r-lg">
-              <select
-                id="model"
-                hx-get="/api/model"
-                hx-trigger="click once"
-                class="rounded-r-lg bg-gray-700 text-gray-600 text-white text-sm text-center h-full p-3"
-              >
-                <option selected>Choose a model</option>
-              </select>
-            </form>
-          </div>
+        <div class="w-full inline-flex pb-6 px-4">
+          <input
+            type="text"
+            class="rounded-l-lg w-full px-3 py-2 disabled:bg-gray-700 bg-gray-600 disabled:text-gray-500 text-gray-200 focus:outline-none"
+            id="prompt"
+            name="prompt"
+            hx-post="/api/prompt"
+            hx-vals='js:{
+              model: document.getElementById("model").selectedOptions[0].value,
+              context: document.getElementById("context").selectedOptions[0].value
+            }'
+            hx-ext="json-enc"
+            hx-trigger="keyup[key=='Enter']"
+            hx-on::after-request="this.value=''"
+            hx-swap="none scroll:#chat:bottom"
+            hx-disabled-elt="this"
+            placeholder="Prompt..."
+          />
+          <button
+            hx-post="/api/prompt"
+            id="send"
+            class="rounded-r-lg bg-gray-700 text-white px-4 text-center"
+            hx-include="#prompt"
+            hx-vals='js:{
+              model: document.getElementById("model").selectedOptions[0].value,
+              context: document.getElementById("context").selectedOptions[0].value
+            }'
+            hx-ext="json-enc"
+            hx-trigger="click"
+            hx-on::after-request='document.getElementById("prompt").value=""'
+            hx-swap="none"
+            hx-disabled-elt="this"
+          >
+            ➤
+          </button>
         </div>
       </div>
     </div>
