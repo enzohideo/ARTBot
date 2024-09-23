@@ -1,5 +1,6 @@
 import Server from "./backend/http.js";
 import Chat from "./backend/chat.js";
+import parseStream from "./backend/parse.js";
 import Ui, { escapeHtmlText } from "./frontend/htmx.js";
 import path from "node:path";
 import getFile, { MIME_TYPES } from "./backend/file.js";
@@ -61,66 +62,26 @@ const server = new Server()
         stream: true,
         ...data,
       })
-      .then(async (stream) => {
-        let text = [""];
-        let code = "";
-
-        // TODO: refactor this mess (it works though)
-
-        for await (const chunk of stream) {
-          text.push(chunk.choices[0]?.delta?.content || "");
-
-          let message;
-          const codeIndex = text.slice(-2).join("").indexOf("```");
-
-          if (codeIndex >= 0) {
-            if (codeIndex < text[0].length) {
-              text[1] = text[0].slice(codeIndex) + text[1];
-              text[0] = text[0].slice(0, codeIndex);
-            } else {
-              const index = codeIndex - text[0].length;
-              text[0] = text[0] + text[1].slice(0, index);
-              text[1] = text[1].slice(index);
-            }
-            if (!!code.length) {
-              code += text[0];
-
-              message = Ui.iframe({ html: code.substring(3, code.length - 3) });
-              if (chat.sse) chat.sse({ id, message });
-
-              code = "";
-              text[1] = text[1].substr(3);
-            } else {
-              message = Ui.messageContent({
+      .then((stream) =>
+        parseStream({
+          stream,
+          chunkParser: (chunk) => chunk.choices[0]?.delta?.content || "",
+          handlers: [
+            (text, transition, acc) => {
+              const message = Ui.messageContent({
                 id,
-                text: escapeHtmlText(text[0]),
+                text: escapeHtmlText(text).replace(/\n/g, "<br>"),
               });
-              code += text[1];
-              text[1] = "";
-            }
-          } else if (!!code.length) {
-            code += text[0];
-          } else {
-            message = Ui.messageContent({ id, text: escapeHtmlText(text[0]) });
-          }
-
-          console.log("message", message);
-
-          if (message && chat.sse) {
-            chat.sse({ id, message });
-            await new Promise((resolve) => setTimeout(resolve, 300));
-          }
-          text.shift();
-        }
-
-        for (const t of text) {
-          const message = Ui.messageContent({
-            id,
-            text: escapeHtmlText(t).replace("\n", "<br>"),
-          });
-          if (chat.sse) chat.sse({ id, message });
-        }
-      });
+              if (message && chat.sse) chat.sse(message);
+            },
+            (text, transition, acc) => {
+              if (!transition) return;
+              const message = Ui.iframe({ html: acc });
+              if (message && chat.sse) chat.sse(message);
+            },
+          ],
+        }),
+      );
   })
   .get("/sse", (request, response) => {
     response.writeHead(200, {
@@ -131,7 +92,7 @@ const server = new Server()
 
     console.log("New SSE connection.");
 
-    chat.sse = ({ id, message }) => {
+    chat.sse = (message) => {
       response.write(`data: ${message.replaceAll("\n", "\ndata: ")}\n\n`);
     };
 
