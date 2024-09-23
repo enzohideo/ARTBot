@@ -43,13 +43,17 @@ const server = new Server()
 
     const id = `sse-${Date.now()}`;
 
-    response.end(
-      Ui.message({
+    response.end(`
+      ${Ui.message({
+        role: "user",
+        text: data.prompt || data.content,
+      })}
+      ${Ui.message({
         role: "assistant",
         text: "",
         id: id,
-      }),
-    );
+      })}
+    `);
 
     return chat
       .send({
