@@ -27,7 +27,15 @@ export default async ({ stream, chunkParser, separator = "```", handlers }) => {
     handle(prevText, foundSeparator, acc);
 
     prevText = currText;
-    if (foundSeparator) state = state == State.TEXT ? State.CODE : State.TEXT;
+    if (foundSeparator) {
+      if (state == State.TEXT) {
+        state = State.CODE;
+        accText = '';
+      } else {
+        state = State.TEXT;
+        accCode = '';
+      }
+    }
   };
 
   for await (const chunk of stream) {
