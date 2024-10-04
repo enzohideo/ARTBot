@@ -33,8 +33,8 @@ npm i --frozen-lockfile
 Update Tailwind style and run the server
 
 ```sh
-# Lints the code using prettier
-npm run lint
+# Formats the code using prettier
+npm run format
 
 # Generates style.css using tailwind
 npm run style
