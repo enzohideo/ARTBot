@@ -1,5 +1,7 @@
 # ART Bot
 
+![image](https://github.com/user-attachments/assets/cbdebfe0-79b7-4cbb-b435-825dca45a6a2)
+
 ## Usage
 
 Install required dependencies
