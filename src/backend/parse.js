@@ -30,10 +30,10 @@ export default async ({ stream, chunkParser, separator = "```", handlers }) => {
     if (foundSeparator) {
       if (state == State.TEXT) {
         state = State.CODE;
-        accText = '';
+        accText = "";
       } else {
         state = State.TEXT;
-        accCode = '';
+        accCode = "";
       }
     }
   };
