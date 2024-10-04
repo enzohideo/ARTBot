@@ -29,7 +29,9 @@ export default {
     <div class="flex-1 space-y-1 w-10/12 mr-6">
       <div>
         <span class="font-bold text-blue-300">${role}</span>
-        <span class="font-bold text-gray-400 text-xs">${date.getHours()}:${date.getMinutes()}</span>
+        <span class="font-bold text-gray-400 text-xs">
+          ${String(date.getHours()).padStart(2, 0)}:${String(date.getMinutes()).padStart(2, 0)}
+        </span>
       </div>
       <div class="text-white leading-normal">
         <div ${id ? `id="${id}"` : ""}>${text}</div>
