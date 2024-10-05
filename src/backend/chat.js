@@ -41,6 +41,12 @@ export default class Chat {
       this.client.chat.completions.create({
         messages: this.messages.slice(context < 0 ? 0 : -context - 1),
         model: models.includes(model) ? model : this.#models[-1],
+        stop: [
+          `${role}:`,
+          `${role.charAt(0).toUpperCase() + role.slice(1)}:`,
+          'GPT4 Incorrect',
+          'GTP4 Correct'
+        ],
         ...rest,
       }),
     );
