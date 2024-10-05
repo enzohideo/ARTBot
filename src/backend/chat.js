@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 export default class Chat {
   messages = [];
-  #models;
+  #models = [];
 
   constructor(args) {
     this.client = new OpenAI(args);
@@ -33,15 +33,16 @@ export default class Chat {
   }
 
   send({ role = "user", content, prompt, model, context, ...rest }) {
-    if (!model || (!content && !prompt))
-      throw new Error("Missing prompt or model");
+    if (!content && !prompt) throw new Error("Missing prompt");
 
     this.messages.push({ role, content: content || prompt });
 
-    return this.client.chat.completions.create({
-      messages: this.messages.slice(context < 0 ? 0 : -context - 1),
-      model: model,
-      ...rest,
-    });
+    return this.models().then((models) =>
+      this.client.chat.completions.create({
+        messages: this.messages.slice(context < 0 ? 0 : -context - 1),
+        model: models.includes(model) ? model : this.#models[-1],
+        ...rest,
+      }),
+    );
   }
 }

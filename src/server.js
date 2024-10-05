@@ -22,7 +22,7 @@ const server = new Server()
 
     response.writeHead(200, { "Content-Type": "text/html" });
 
-    if (!data.model || !data.prompt || !chat.models().includes(data.model)) {
+    if (!data.model || !data.prompt) {
       response.end(
         Ui.message({
           role: "system",
@@ -135,7 +135,11 @@ const server = new Server()
     response.writeHead(200, {
       "Content-Type": "text/html",
     });
-    chat.models().then((models) => response.end(Ui.options({ opts: models })));
+    chat
+      .models()
+      .then((models) =>
+        response.end(Ui.options({ opts: ["Default model", ...models] })),
+      );
   })
   .get("/*", (request, response) =>
     getFile(FRONTEND_PATH, request.url).then((file) => {
