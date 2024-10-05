@@ -66,6 +66,16 @@ curl -X "POST" -d '{"prompt": "Hello! Tell me a joke", "model": "sabia-3", "cont
 curl -X "GET" localhost:8080/api/models
 ```
 
+## API Compatibility
+
+This project should work with any API compatible with OpenAI's.
+
+- Llama-cpp
+```sh
+# Set API_URL to 127.0.0.1:8888 and leave API_KEY empty
+llama-server -m your_model.gguf --port 8888 --chat-template openchat
+```
+
 ## Nix/NixOS
 
 ### Development shell
