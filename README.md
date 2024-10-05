@@ -14,6 +14,15 @@ Install required dependencies
 npm i --frozen-lockfile --omit=dev
 ```
 
+Save these environment variables in a .env file
+
+```sh
+API_URL=        # API url
+API_KEY=        # API key (if any)
+HOST=localhost  # web interface host
+PORT=8080       # web interface port
+```
+
 Start the server
 
 ```sh
