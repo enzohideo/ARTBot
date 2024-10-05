@@ -156,4 +156,8 @@ const server = new Server()
   )
   .listen(PORT, HOST, () => {
     console.log(`Server running at http://${HOST}:${PORT}/`);
+  })
+  .on("error", (err) => {
+    console.log(err);
+    server.close();
   });

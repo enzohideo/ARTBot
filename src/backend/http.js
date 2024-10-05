@@ -82,4 +82,13 @@ export default class Server {
     this.server.listen(...args);
     return this;
   }
+
+  on(...args) {
+    this.server.on(...args);
+    return this;
+  }
+
+  close() {
+    this.server.close();
+  }
 }
