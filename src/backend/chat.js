@@ -4,16 +4,32 @@ export default class Chat {
   messages = [];
   #models;
 
-  constructor(...args) {
-    this.client = new OpenAI(...args);
+  constructor(args) {
+    this.client = new OpenAI(args);
+
+    // FIXME: Maritalk API doesn't support the '/v1/models' request yet
+    // curl ${API_URL}/models -H "Authorization: Bearer $API_KEY"
+    // https://platform.openai.com/docs/api-reference/models/list
+    if (args?.baseURL?.includes("maritaca"))
+      this.#models = [
+        "sabia-3",
+        "sabia-2-medium",
+        "sabia-2-small",
+        // "sabia-2-medium-2024-03-13",
+        // "sabia-2-small-2024-03-13",
+      ];
   }
 
-  models() {
-    if (this.#models) return this.#models;
-    return this.client.models.list().then((m) => {
-      this.#models = m;
-      return m;
-    });
+  async models() {
+    if (!this.#models)
+      await this.client.models
+        .list()
+        .then((m) => (this.#models = m))
+        .catch(() => {
+          this.#models = [];
+          console.log("/models is not supported by host");
+        });
+    return this.#models;
   }
 
   send({ role = "user", content, prompt, model, context, ...rest }) {

@@ -11,15 +11,6 @@ const HOST = process.env["HOST"];
 const PORT = process.env["PORT"];
 const FRONTEND_PATH = path.join(process.cwd(), "./src/frontend");
 
-// FIXME: Maritalk API does not seem to support the 'list models' request yet
-const MODELS = [
-  "sabia-3",
-  "sabia-2-medium",
-  "sabia-2-small",
-  // "sabia-2-medium-2024-03-13",
-  // "sabia-2-small-2024-03-13",
-];
-
 const chat = new Chat({
   apiKey: process.env["API_KEY"],
   baseURL: process.env["API_URL"],
@@ -31,7 +22,7 @@ const server = new Server()
 
     response.writeHead(200, { "Content-Type": "text/html" });
 
-    if (!data.model || !data.prompt || !MODELS.includes(data.model)) {
+    if (!data.model || !data.prompt || !chat.models().includes(data.model)) {
       response.end(
         Ui.message({
           role: "system",
@@ -144,7 +135,7 @@ const server = new Server()
     response.writeHead(200, {
       "Content-Type": "text/html",
     });
-    response.end(Ui.options({ opts: MODELS }));
+    chat.models().then((models) => response.end(Ui.options({ opts: models })));
   })
   .get("/*", (request, response) =>
     getFile(FRONTEND_PATH, request.url).then((file) => {
