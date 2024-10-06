@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 export default class Chat {
   messages = [];
-  #models = [];
+  #models;
 
   constructor(args) {
     this.client = new OpenAI(args);
